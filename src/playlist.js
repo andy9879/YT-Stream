@@ -16,7 +16,7 @@ function genNonce(length){
 }
 
 function getPlaylist(ytstream, url){
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         if(!validatePlaylistURL(ytstream, url)) throw new Error(`Invalid YouTube playlist url`);
 
         let listId = null;
@@ -47,13 +47,8 @@ function getPlaylist(ytstream, url){
 
             var request_url = `https://www.youtube.com/playlist?list=${listId}&has_verified=1`;
 
-            var response;
-            try{
-                response = await requestPlayList(request_url, headers, ytstream.agent);
-            } catch (err){
-                reject(err);
-            }
 
+            requestPlayList(request_url, headers, ytstream.agent).then(response => {
             response = response.split('var ytInitialData = ')[1];
             if(!response) return reject(`The YouTube playlist has no initial data response`);
 
@@ -71,7 +66,11 @@ function getPlaylist(ytstream, url){
                 return (a.alertRenderer || a.alertWithButtonRenderer).type === 'ERROR';
             });
             if(errors.length > 0) return reject(errors[0].alertRenderer.text.runs[0].text);
-            resolve(new Playlist(json, headers, listId));
+                resolve(new Playlist(json, headers, listId));
+            }).catch(e => {
+                reject(err)
+            })
+            
         } else if(ytstream.preference === 'api'){
             const clientInfo = genClientInfo(undefined, ytstream.client);
 
