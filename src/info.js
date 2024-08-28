@@ -29,10 +29,10 @@ function genNonce(length){
 
 function getInfo(ytstream, url, force = false){
   return new Promise((resolve, reject) => {
-    if(typeof url !== 'string') throw new Error(`URL is not a string`);
+    if(typeof url !== 'string') return reject(`URL is not a string`);
 
     const validation = validateVideoURL(ytstream, url);
-    if(!validation) throw new Error(`Invalid YouTube video URL`);
+    if(!validation) return reject(`Invalid YouTube video URL`);
 
     var ytid = null;
     let parsed = _url(url);
