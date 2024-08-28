@@ -17,7 +17,7 @@ function genNonce(length){
 
 function getPlaylist(ytstream, url){
     return new Promise(async (resolve, reject) => {
-        if(!validatePlaylistURL(ytstream, url)) throw new Error(`Invalid YouTube playlist url`);
+        if(!validatePlaylistURL(ytstream, url)) return reject(`Invalid YouTube playlist url`);
 
         let listId = null;
         const parsed = _url(url);
